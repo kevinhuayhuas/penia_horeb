@@ -1,0 +1,25 @@
+import mysql from "mysql2/promise";
+
+// Pool de conexiones reutilizable para todo el ciclo de vida del servidor
+const pool = mysql.createPool({
+  host:     process.env.DB_HOST     ?? "localhost",
+  port:     Number(process.env.DB_PORT ?? 3306),
+  user:     process.env.DB_USER     ?? "root",
+  password: process.env.DB_PASSWORD ?? "",
+  database: process.env.DB_NAME     ?? "db_escuela_sabatica",
+  waitForConnections: true,
+  connectionLimit:    10,
+  queueLimit:         0,
+  timezone:           "+00:00",
+});
+
+export default pool;
+
+// Utilidad: ejecutar una query con parámetros tipados
+export async function query<T>(
+  sql: string,
+  params?: unknown[]
+): Promise<T> {
+  const [rows] = await pool.execute(sql, params);
+  return rows as T;
+}
