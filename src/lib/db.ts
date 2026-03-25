@@ -18,7 +18,7 @@ export default pool;
 // Utilidad: ejecutar una query con parámetros tipados
 export async function query<T>(
   sql: string,
-  params?: unknown[]
+  params?: any[]
 ): Promise<T> {
   const [rows] = await pool.execute(sql, params);
   return rows as T;
